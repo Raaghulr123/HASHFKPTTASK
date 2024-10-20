@@ -1,0 +1,139 @@
+describe('Price Slider Test', () => {
+
+  letcontinuation;
+
+  letdatas;
+
+  letlowestPricedProduct;
+
+  lethighestPricedProduct;
+
+  before(()=>{
+
+    cy.visit('https://www.flipkart.com');
+
+    cy.fixture('fkpt').then((testdata)=>{
+
+    datas=testdata;
+
+    })
+
+  })
+
+  it('Validate landed on actual page', () => {
+
+    cy.url().should('include',datas.urlassertion)
+
+    // voluntarily failed assertion added in form of soft assertion here, test will not stop
+
+    cy.title().better('have.text',datas.negativeassertion)
+
+    cy.url().then((url)=>{
+
+    continuation=url
+
+    })
+
+  })
+
+  it('Validate slider & filter functionality(checkbox of brands),adjust slider with the expected min and max range and make assertions',()=>{
+
+    cy.visit(continuation)
+
+    cy.get('[class="Pke_EE"]').type(`${datas.searchcontext}{enter}`)
+
+    constleftHandle=cy.get('.iToJ4v.Kaqq1s');
+
+    constrightHandle=cy.get('.iToJ4v.D0puJn');
+
+    leftHandle.trigger('mousedown').trigger('mousemove', { clientX:130 }).trigger('mouseup');
+
+    rightHandle.trigger('mousedown').trigger('mousemove', { clientX:150 }).trigger('mouseup');
+
+    cy.get('.BXgIa-').within(() => {
+
+    cy.get('.suthUA select').should('have.value', datas.assertMin);
+
+    cy.get('.tKgS7w select').should('have.value', datas.assertMax);
+
+    });
+
+    cy.get(`[class="bs1+1t"] [title="${datas.brand}"] input[type="checkbox"]`).check({force:true})
+
+    cy.wait(3000)
+
+    letproducts= [];
+
+    cy.get('[class="DOjaWF gdgoEp"] [class="_75nlfW"]').each(($el) => {
+
+    constproductName=$el.find('[class="KzDlHZ"]').text();
+
+    constpriceText=$el.find('[class="Nx9bqj _4b5DiR"]').text();
+
+    if (productName&&priceText) {
+
+    constprice=parseInt(priceText.replace(/[₹,]/g, ''));
+
+    products.push({ name:productName, price:price });
+
+    }
+
+    }).then(() => {
+
+    products.sort((a, b) =>a.price-b.price);
+
+    lowestPricedProduct=products[0];
+
+    highestPricedProduct=products[products.length-1];
+
+    expect(lowestPricedProduct.name).to.include(`${datas.brand}`)
+
+    expect(lowestPricedProduct.price).to.be.greaterThan(datas.minimumprice)
+
+    cy.log(`Lowest Priced Product: ${lowestPricedProduct.name} - ₹${lowestPricedProduct.price}`);
+
+    expect(highestPricedProduct.name).to.include(`${datas.brand}`)
+
+    expect(highestPricedProduct.price).to.be.lessThan(datas.maximumprice)
+
+    cy.log(`Highest Priced Product: ${highestPricedProduct.name} - ₹${highestPricedProduct.price}`);
+
+    cy.log(`price range between lowest and highest is ₹ ${highestPricedProduct.price-lowestPricedProduct.price}`)
+
+    });
+
+    cy.url().then((url)=>{
+
+    continuation=url
+
+    })
+
+  })
+
+  it(`validate basic things on product page`,()=>{
+
+    cy.visit(continuation)
+
+    cy.get('[data-id*="MOB"] .tUxRFH a').eq(0).invoke('removeAttr','target').click()
+
+    cy.get('[class="DOjaWF gdgoEp col-8-12"] [class="cPHDOP col-12-12"] h1 .VU-ZEz',{timeout:6000}).then((productname)=>{
+
+    constproductName=productname.text()
+
+    expect(productName).to.include(`${datas.brand}`)
+
+    })
+
+    cy.get('[class="Nx9bqj CxhGGd"]').then((pricetxt)=>{
+
+    constpriceText=pricetxt.text()
+
+    constprice=parseInt(priceText.replace(/[₹,]/g, ''));
+
+    expect(price).to.be.greaterThan(datas.minimumprice)
+
+    })
+
+  })
+
+})

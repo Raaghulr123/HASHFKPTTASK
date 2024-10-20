@@ -1,0 +1,10 @@
+{
+  "urlassertion":"www.flipkart.com",
+  "negativeassertion":"amazon",
+  "searchcontext":"mobiles under 15000",
+  "brand":"SAMSUNG",
+  "assertMin":"15000",
+  "assertMax":"20000",
+  "minimumprice":15000,
+  "maximumprice":20000
+}
